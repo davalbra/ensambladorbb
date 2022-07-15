@@ -14,6 +14,8 @@ msg2 db 10,13, "Primera cadena: $"
 msg3 db 10,13, "Segunda cadena: $" 
 msg4 db 10,13, "NO ES ANAGRAMA$"
 msg5 db 10,13, "QUIERES INTENTARLO DE NUEVO S/N$"
+msg6 db 10,13, "INGRESASTE MAL, VUELVE A INTENTARLO$"
+msg7 db 10,13, "SALIENDO DEL PROGRAMA$"
  
 
 ;----------------------
@@ -107,7 +109,6 @@ rrecorrerp2:
 mov bl, cadena1[si]
 cmp al,bl
 je rp2r
-returnrp2r:
 cmp cadena1[si],24h  
 je verinterna       
 inc si
@@ -127,8 +128,12 @@ loop proceso2
 
 rp2r:
 mov temp, 1
-mov cadena1[si], 20h
-jmp returnrp2r
+mov cadena1[si], 20h 
+inc si   
+cmp di, 1
+je verificar
+dec di
+jmp proceso2
 
 
 verificar:
@@ -154,7 +159,13 @@ mov ah, 09h
 lea dx, msg4
 int 21h
 call saltoL
-jmp repetir
+jmp repetir 
+
+
+mensajerep:
+mov ah, 09h
+lea dx, msg6
+int 21h
 
 repetir:
 mov ah, 09h
@@ -167,10 +178,17 @@ cmp al, 53h
 je reproces
 cmp al, 73h
 je reproces
-jmp exit
+cmp al, 6Eh
+je SMSexit
+cmp al, 4Eh
+je SMSexit
+loop mensajerep 
 
- 
-
+SMSexit: 
+mov ah, 09h
+lea dx, msg7
+int 21h
+JMP exit
 
 ;hacemos un salto de linea       
 saltoL proc
@@ -179,38 +197,7 @@ lea dx, salto
 int 21h
 ret
 endp
-
-;convertimos los numeros para imprimir
-convertir proc           
-mov cx, 0
-mov bl, 10           
-div bl              
-mov dh, ah           
-mov dl, al         
-mov ah, 00h          
-mov al, dh           
-push ax              
-mov ax, 0000h        
-mov al, dl           
-add cx, 1            
-cmp dl, 0            
-jne convertir        
-je mostrar
-ret
-endp
-
-;mostramos los numeros
-mostrar proc             
-sub cx, 1            
-pop ax               
-mov ah, 02h          
-mov dl, al           
-add dl, 30h          
-int 21h              
-cmp cx, 0            
-jne mostrar
-ret
-endp          
+      
 
 ;---------------
 exit:
