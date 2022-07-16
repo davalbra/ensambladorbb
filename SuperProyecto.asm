@@ -1,4 +1,4 @@
-name "superficie"
+name "Proyecto David Bravo, Yonkani Cedeno"
 
 DATOS SEGMENT
 ;DECLARAR VARIABLES ---------------------
@@ -81,18 +81,19 @@ mov al, cadena2[si]
 push ax            
 cmp al, 30h
 jg mayor
+;proceso para retornar cuando el numero sea mayor
 retmayor:
-cmp al, 39h
-jl menor
+cmp al, 39h                                      
+jl menor                                         
+;proceso para retornar cuando el numero sea menor
 retmenor:
-
 cmp condicion, 2
 je noes
-
 inc si
 inc di
 loop proceso1
 
+;mayor y menor agregan valor 1 en la variable condicion 
 mayor:
 add condicion, 1
 jmp retmayor
@@ -100,7 +101,7 @@ menor:
 add condicion, 1
 jmp retmenor
 
-
+;el proceso 2 quita cada una de las letras de la cadena1 dependiendo de lo que ssalga de la pila
 proceso2:
 pop ax
 mov si, 2
@@ -114,6 +115,7 @@ je verinterna
 inc si
 jne rrecorrerp2
 
+; esta etiqueta hace una verificacion interna para saber si de ante mano es o no es Anagrama
 verinterna:
 mov cl,temp
 cmp cl,0
@@ -125,7 +127,7 @@ dec di
 loop proceso2
 
 
-
+; esta etiqueta reemplaza los caracteres encontrado por el proceso2 por un espacio
 rp2r:
 mov temp, 1
 mov cadena1[si], 20h 
@@ -135,7 +137,7 @@ je verificar
 dec di
 jmp proceso2
 
-
+; verifica si la cadena 1 ha quedado vacia o no, si no ha quedado vacia no es Anagrama
 verificar:
 mov si, 2
 loopverificar:    
@@ -146,14 +148,15 @@ jne noes
 inc si
 loop loopverificar
 
-
+; mensaje para cuando las cadenas ingresadas cumplen con la condicion de anagrama
 sies:
 mov ah, 09h
 lea dx, msg1
 int 21h
 call saltoL
-jmp repetir
+jmp repetir                                                                      
 
+; mensaje para cuando las cadenas ingresadas no cumplen con la condicion de anagrama 
 noes:
 mov ah, 09h
 lea dx, msg4
@@ -161,12 +164,13 @@ int 21h
 call saltoL
 jmp repetir 
 
-
+; mensaje para cuando no ha ingresado las peticiones solicitadas
 mensajerep:
 mov ah, 09h
 lea dx, msg6
-int 21h
+int 21h                                                         
 
+;Etiqueta para decirle al usuario si quiere ingresar de nuevo los valores
 repetir:
 mov ah, 09h
 lea dx, msg5
